@@ -83,6 +83,7 @@ const Frontpage = () => {
 
     // NEEDS TO CHANGE
     dispatch(SignupAction(user)).then((res) => {
+      console.log(res, "HEYA");
       if (res.status === 200) {
         dispatch(AddProjectAction(projectData));
       }
@@ -138,7 +139,7 @@ const Frontpage = () => {
             <ModalCloseButton />
             <ModalBody pb={5}>
               <FormControl>
-                <FormLabel>Customer Name*</FormLabel>
+                <FormLabel>Project Name*</FormLabel>
                 <Input
                   ref={initialRef}
                   placeholder="Title"

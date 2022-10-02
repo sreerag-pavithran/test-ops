@@ -53,37 +53,42 @@ export const GetAllProjectsByCurrentUser = () => {
 };
 
 export const AddProjectAction = (form) => async (dispatch) => {
-  try {
-    dispatch({
-      type: PROJECT_API_CALL_OFF,
-    });
-    const res = await axios.post(
+  const token = window.localStorage.getItem("token");
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+      authorization: `Bearer ${token}`,
+    },
+  };
+  dispatch({
+    type: PROJECT_API_CALL_OFF,
+  });
+  const res = await axios
+    .post(
       `${API_URL}/create-project`,
       {
         ...form,
       },
       config
-    );
-    const { data } = res;
-    data && dispatch(GetAllProjectsByCurrentUser());
-    data &&
-      dispatch({
-        type: PROJECT_API_CALL,
-        payload: {
-          title: "🎉 New project created",
-          status: data?.status,
-          apiCalled: true,
-        },
-      });
-  } catch (error) {
-    let {
-      response: { data },
-    } = error;
-    dispatch({
-      type: PROJECT_API_CALL,
-      payload: { title: data?.message, status: data?.status, apiCalled: true },
+    )
+    .then((res) => {
+      console.log(res);
+      const { data } = res;
+      data && dispatch(GetAllProjectsByCurrentUser());
+      data && window.location.replace("/projects");
+      data &&
+        dispatch({
+          type: PROJECT_API_CALL,
+          payload: {
+            title: "🎉 New project created",
+            status: data?.status,
+            apiCalled: true,
+          },
+        });
+    })
+    .catch((err) => {
+      message.error(err?.response?.data?.msg);
     });
-  }
 };
 
 export const LeaveProject = (ownerID, projectID) => async (dispatch) => {

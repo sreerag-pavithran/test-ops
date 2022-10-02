@@ -178,7 +178,7 @@ const MilestoneBoard = (data) => {
             </div>
           </div>
           <hr />
-          <div style={{ padding: 10 }}>
+          {/* <div style={{ padding: 10 }}>
             <Mentions
               style={{
                 width: "100%",
@@ -209,7 +209,7 @@ const MilestoneBoard = (data) => {
                   );
                 })}
             </Mentions>
-          </div>
+          </div> */}
           <hr />
           <div style={{ padding: 10, marginTop: 10 }}>
             <TextArea

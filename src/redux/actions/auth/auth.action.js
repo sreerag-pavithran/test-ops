@@ -1,6 +1,7 @@
 import AxiosInstance from "../../../utils/axios";
 import { AuthTypes } from "../../actionTypes/";
 import { AddProjectAction } from "../../actions";
+import { message } from "antd";
 const {
   LOGIN_REQUEST,
   LOGIN_SUCCESS,
@@ -41,16 +42,15 @@ export const LoginAction = (user) => {
   };
 };
 
-export const SignupAction = (user) => {
-  return async (dispatch) => {
+export const SignupAction = (user) => async (dispatch) => {
+  try {
     dispatch({ type: SIGN_UP_REQUEST });
-    const response = await AxiosInstance.post(`/signup`, {
+    const res = await AxiosInstance.post(`/signup`, {
       ...user,
     });
-
-    if (response?.status === 200) {
-      const token = response?.data.user.token;
-      const user = response?.data.user._user;
+    if (res?.status === 200) {
+      const token = res?.data.user.token;
+      const user = res?.data.user._user;
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
 
@@ -58,18 +58,46 @@ export const SignupAction = (user) => {
         type: SIGN_UP_SUCCESS,
         payload: { token, user },
       });
-      return response;
-    } else {
-      if (response.status === 400 || response.status === 404) {
-        dispatch({
-          type: SIGN_UP_FAILURE,
-          payload: { error: response.data.error },
-        });
-        return response;
-      }
+      return res;
     }
-  };
+  } catch (error) {
+    message.error(error);
+  }
 };
+
+// export const SignupAction = (user) => {
+//   return async (dispatch) => {
+//     dispatch({ type: SIGN_UP_REQUEST });
+//     const response = await AxiosInstance.post(`/signup`, {
+//       ...user,
+//     });
+
+//     if (response?.status === 200) {
+//       const token = response?.data.user.token;
+//       const user = response?.data.user._user;
+//       localStorage.setItem("token", token);
+//       localStorage.setItem("user", JSON.stringify(user));
+
+//       dispatch({
+//         type: SIGN_UP_SUCCESS,
+//         payload: { token, user },
+//       });
+//       return response;
+//     } else {
+//       if (
+//         response.status === 400 ||
+//         response.status === 404 ||
+//         response.status === 409
+//       ) {
+//         dispatch({
+//           type: SIGN_UP_FAILURE,
+//           payload: { error: response.data.error },
+//         });
+//         return message.error(response?.msg);
+//       }
+//     }
+//   };
+// };
 
 export const isUserLoggedIn = () => {
   return async (dispatch) => {

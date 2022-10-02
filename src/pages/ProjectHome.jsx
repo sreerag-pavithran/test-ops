@@ -278,7 +278,7 @@ const ProjectHome = () => {
                 <ModalCloseButton />
                 <ModalBody pb={5}>
                   <FormControl>
-                    <FormLabel>Customer Name *</FormLabel>
+                    <FormLabel>Project Name *</FormLabel>
                     <Input
                       ref={initialRef}
                       placeholder="Title"
