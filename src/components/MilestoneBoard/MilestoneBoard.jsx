@@ -167,13 +167,34 @@ const MilestoneBoard = (data) => {
                 <p style={{ marginRight: 10, color: "#929292" }}>
                   Dependencies
                 </p>
-                <Input
+                <Select
+                  style={{
+                    width: 200,
+                  }}
+                  placeholder="Choose person"
+                  className="assign_select"
+                  bordered={false}
+                  onChange={(value) =>
+                    setFormData({ ...formData, task_dependencies: [value] })
+                  }
+                >
+                  {people &&
+                    people.length > 0 &&
+                    people.map((ele, i) => {
+                      return (
+                        <Option key={i} value={ele?._id}>
+                          {ele?.fullName}
+                        </Option>
+                      );
+                    })}
+                </Select>
+                {/* <Input
                   onChange={(e) =>
                     setFormData({ ...formData, dependencies: e.target.value })
                   }
                   bordered={false}
                   placeholder="Type in here"
-                />
+                /> */}
               </div>
             </div>
           </div>
