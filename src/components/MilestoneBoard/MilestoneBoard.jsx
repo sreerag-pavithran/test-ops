@@ -165,7 +165,7 @@ const MilestoneBoard = (data) => {
               </div>
               <div>
                 <p style={{ marginRight: 10, color: "#929292" }}>
-                  Dependenices
+                  Dependencies
                 </p>
                 <Input
                   onChange={(e) =>

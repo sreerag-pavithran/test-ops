@@ -56,3 +56,13 @@ export const CreateUserApi = (formData) => async (dispatch) => {
     console.log(error);
   }
 };
+
+export const AddRole = (formData) => async (dispatch) => {
+  try {
+    const res = await axios.post(`${API_URL}/add-role`, formData, config);
+    console.log(res);
+    return res;
+  } catch (error) {
+    console.log(error);
+  }
+};

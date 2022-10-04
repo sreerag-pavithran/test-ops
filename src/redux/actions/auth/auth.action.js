@@ -1,7 +1,9 @@
 import AxiosInstance from "../../../utils/axios";
 import { AuthTypes } from "../../actionTypes/";
 import { AddProjectAction } from "../../actions";
+import { API_URL } from "../../../utils/url";
 import { message } from "antd";
+import axios from "axios";
 const {
   LOGIN_REQUEST,
   LOGIN_SUCCESS,
@@ -12,33 +14,64 @@ const {
   SIGN_UP_REQUEST,
   SIGN_UP_FAILURE,
   SIGN_UP_SUCCESS,
+  BUTTON_LOADER_ON,
+  BUTTON_LOADER_OFF,
 } = AuthTypes;
 
-export const LoginAction = (user) => {
+export const LoginAction = (user, navigate) => {
   return async (dispatch) => {
-    dispatch({ type: LOGIN_REQUEST });
-    const response = await AxiosInstance.post(`/signin`, {
-      ...user,
-    });
-    console.log("Token from action", response);
-    if (response?.status === 200) {
-      const { token, user } = response?.data;
+    // dispatch({ type: LOGIN_REQUEST });
+    try {
+      dispatch({ type: BUTTON_LOADER_ON });
+      let response = await axios.post(`${API_URL}/signin`, { ...user });
+      response?.status && dispatch({ type: BUTTON_LOADER_OFF });
+      const { data } = response;
+      if (data?.status == true) {
+        const { token, user } = response?.data;
+        localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(user));
 
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
-
-      dispatch({
-        type: LOGIN_SUCCESS,
-        payload: { token, user },
-      });
-    } else {
-      if (response.status === 400 || response.status === 404) {
         dispatch({
-          type: LOGIN_FAILURE,
-          payload: { error: response.data.error },
+          type: LOGIN_SUCCESS,
+          payload: { token, user },
         });
+        token && window.location.replace("/projects");
       }
+    } catch (error) {
+      dispatch({ type: BUTTON_LOADER_OFF });
+      message.error(error?.response?.data?.msg);
     }
+    // const response = await AxiosInstance.post(`/signin`, {
+    //   ...user,
+    // })
+    //   .then((response) => {
+    //   const { token, user } = response?.data;
+    //   localStorage.setItem("token", token);
+    //   localStorage.setItem("user", JSON.stringify(user));
+
+    //   dispatch({
+    //     type: LOGIN_SUCCESS,
+    //     payload: { token, user },
+    //   });
+    //   console.log(token, "TOKWEN");
+    //   token && navigate("/projects");
+    // })
+    //   .catch((err) => {
+    //     console.log(err);
+    //     message.error(err?.response?.data?.msg);
+    //   });
+    // console.log("Token from action", response);
+    // if (response?.status === 200) {
+
+    // } else {
+    //   if (response.status === 400 || response.status === 404) {
+    //     console.log("COPMKG}D");
+    //     dispatch({
+    //       type: LOGIN_FAILURE,
+    //       payload: { error: response.data.error },
+    //     });
+    //   }
+    // }
   };
 };
 

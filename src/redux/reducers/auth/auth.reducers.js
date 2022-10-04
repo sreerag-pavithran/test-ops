@@ -9,6 +9,8 @@ const {
   SIGN_UP_SUCCESS,
   SIGN_UP_REQUEST,
   SIGN_UP_FAILURE,
+  BUTTON_LOADER_ON,
+  BUTTON_LOADER_OFF,
 } = AuthTypes;
 
 const InitialState = {
@@ -24,6 +26,9 @@ const InitialState = {
   isSignedUp: false,
   isSigningIn: false,
   loading: false,
+  loader: {
+    buttonLoader: false,
+  },
   error: "",
   message: "",
 };
@@ -93,6 +98,22 @@ export const AuthReducer = (state = InitialState, action) => {
         ...state,
         error: payload.error,
         loading: false,
+      };
+      break;
+    case BUTTON_LOADER_ON:
+      state = {
+        ...state,
+        loader: {
+          buttonLoader: true,
+        },
+      };
+      break;
+    case BUTTON_LOADER_OFF:
+      state = {
+        ...state,
+        loader: {
+          buttonLoader: false,
+        },
       };
       break;
   }

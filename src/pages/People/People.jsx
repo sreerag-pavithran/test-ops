@@ -28,11 +28,15 @@ import {
   DeletePeopleRole,
   FetchPeopleApi,
   UpdatePeopleRole,
+  DeletePeople,
+  UpdatePeople,
 } from "../../redux/actions";
-import { FetchRolesApi } from "../../redux/actions/roles/roles.action";
+import { AddRole, FetchRolesApi } from "../../redux/actions/roles/roles.action";
 import { EditOutlined, InfoCircleFilled } from "@ant-design/icons";
 
 import "./style.css";
+import axios from "axios";
+import { API_URL } from "../../utils/url";
 
 const { Option } = AntSelect;
 
@@ -46,9 +50,11 @@ const People = () => {
   const [editPeopleModal, setEditPeopleModal] = useState(false);
   const [viewRoleModal, setViewRoleModal] = useState(false);
   const [addRoleModal, setAddRoleModal] = useState(false);
+  const [addPeople, setAddPeople] = useState(false);
   const [editRoleModal, setEditRoleModal] = useState(false);
   const [peopleData, setPeopleData] = useState({});
   const [editPeopleData, setEditPeopleData] = useState({});
+  const [addRoleData, setAddRoleData] = useState({});
   const [roleData, setRoleData] = useState({});
   const [editRoleData, setsEditRoleData] = useState({});
   const [formData, setFormData] = useState({
@@ -78,16 +84,37 @@ const People = () => {
   };
 
   const handleAddPerson = () => {
-    console.log("COMING HERE");
-    console.log(formData);
     if (!formData.email || !formData.fullName || !formData.role) {
       return setErr(true);
     }
     dispatch(CreateUserApi(formData));
   };
 
-  console.log(roleData);
-  console.log(editRoleData, "ROLE");
+  const addRoleApi = async () => {
+    const token = window.localStorage.getItem("token");
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${token}`,
+      },
+    };
+    const res = await axios.post(
+      `${API_URL}/add-role`,
+      { ...addRoleData },
+      config
+    );
+    if (res?.statusText === "Created") {
+      dispatch(FetchRolesApi());
+      setAddRoleModal(false);
+      if (addPeople) {
+        onOpen();
+      }
+    }
+  };
+
+  const handleSave = () => {
+    dispatch(UpdatePeople(editPeopleData));
+  };
 
   return (
     <SideBar>
@@ -173,18 +200,41 @@ const People = () => {
         <Input
           style={{ marginBottom: 12 }}
           placeholder="Full Name"
+          onChange={(e) =>
+            setEditPeopleData({ ...editPeopleData, fullName: e.target.value })
+          }
           value={editPeopleData?.fullName}
         />
         <Input
+          onChange={(e) =>
+            setEditPeopleData({ ...editPeopleData, email: e.target.value })
+          }
           value={editPeopleData?.email}
           style={{ marginBottom: 12 }}
           placeholder="Email"
         />
-        <Input
+        <Select
+          onChange={(e) => {
+            if (e.target.value == "new") {
+              setAddRoleModal(true);
+            } else {
+              setEditPeopleData({ ...editPeopleData, role: e.target.value });
+            }
+          }}
+          value={editPeopleData?.role?.value}
+        >
+          {rolesState &&
+            rolesState?.roles?.length > 0 &&
+            rolesState?.roles?.map((ele) => {
+              return <option value={ele?._id}>{ele?.value}</option>;
+            })}
+          <option value="new">Add new role</option>
+        </Select>
+        {/* <Input
           value={editPeopleData?.role?.value}
           style={{ marginBottom: 12 }}
           placeholder="Role"
-        />
+        /> */}
         <div
           style={{
             display: "flex",
@@ -192,8 +242,15 @@ const People = () => {
             marginTop: 20,
           }}
         >
-          <Button className="button_no_outline">Delete</Button>
-          <Button className="button_outline">Save</Button>
+          <Button
+            onClick={() => dispatch(DeletePeople(editPeopleData?._id))}
+            className="button_no_outline"
+          >
+            Delete
+          </Button>
+          <Button onClick={() => handleSave()} className="button_outline">
+            Save
+          </Button>
         </div>
       </AntdModal>
       <AntdModal
@@ -332,7 +389,6 @@ const People = () => {
       </AntdModal>
       <AntdModal
         closable={false}
-        style={{ zIndex: 999999 }}
         title={
           <h1
             style={{
@@ -351,49 +407,33 @@ const People = () => {
       >
         <Input
           style={{ marginBottom: 12 }}
-          // placeholder={editRoleData?.role?.value}
+          placeholder="Roll Name"
           value={editRoleData?.value}
           onChange={(e) =>
-            setsEditRoleData({ ...editRoleData, value: e.target.value })
+            setAddRoleData({ ...addRoleData, value: e.target.value })
           }
         />
         <Select
           style={{ marginBottom: 12 }}
           placeholder="Select option"
-          value={editRoleData?.access}
+          value={addRoleData?.access}
           onChange={(e) =>
-            setsEditRoleData({ ...editRoleData, access: e.target.value })
+            setAddRoleData({ ...addRoleData, access: e.target.value })
           }
           // value={roleData?.role?.access}
         >
-          <option value="internal-admin">Internal Admin</option>
-          <option value="internal-editor">Internal Editor</option>
-          <option value="external-editor">External Editor</option>
+          <option value="team-member">Team Member</option>
+          {/* <option value="internal-editor">Internal Editor</option>
+          <option value="external-editor">External Editor</option> */}
         </Select>
-
-        <Input
-          disabled
-          value={editRoleData?.fullName}
-          style={{ marginBottom: 12 }}
-          placeholder="Role"
-        />
         <div
           style={{
             display: "flex",
-            justifyContent: "space-between",
+            justifyContent: "center",
             marginTop: 20,
           }}
         >
-          <Button
-            onClick={() => dispatch(DeletePeopleRole(roleData?.role?._id))}
-            className="button_no_outline"
-          >
-            Delete Role
-          </Button>
-          <Button
-            className="button_outline"
-            onClick={() => dispatch(UpdatePeopleRole(editRoleData))}
-          >
+          <Button className="button_outline" onClick={() => addRoleApi()}>
             Save
           </Button>
         </div>
@@ -439,6 +479,8 @@ const People = () => {
                     onChange={(e) => {
                       if (e.target.value == "add-role") {
                         setAddRoleModal(true);
+                        setAddPeople(true);
+                        onClose();
                       } else {
                         handleRolesOnchange(e.target.value);
                       }

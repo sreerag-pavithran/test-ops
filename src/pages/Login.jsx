@@ -40,21 +40,21 @@ export default function Login() {
       email: userLogin.email,
       password: userLogin.password,
     };
-    dispatch(LoginAction(user));
+    dispatch(LoginAction(user, navigate));
   };
-  if (user?.isAauthenticated) {
-    // toast({
-    // 	title: '🎉 Successfully logged in',
-    // 	status: 'success',
-    // 	duration: 3000,
-    // 	isClosable: true,
-    // });
-    navigate("/projects", { replace: true });
-  }
+  // if (user?.isAauthenticated) {
+  //   // toast({
+  //   // 	title: '🎉 Successfully logged in',
+  //   // 	status: 'success',
+  //   // 	duration: 3000,
+  //   // 	isClosable: true,
+  //   // });
+  //   navigate("/projects", { replace: true });
+  // }
 
-  if (user?.isAuthenticating) {
-    return <Loader />;
-  }
+  // if (user?.isAuthenticating) {
+  //   return <Loader />;
+  // }
   return (
     <AuthLayout>
       <Text
@@ -95,6 +95,7 @@ export default function Login() {
             />
           </FormControl>
           <Button
+            isLoading={user?.loader?.buttonLoader}
             // isLoading={signUpResult.fetching || loginResult.fetching}
             colorScheme="teal"
             size="lg"

@@ -57,7 +57,7 @@ export const CreateUserApi = (formData) => async (dispatch) => {
 export const DeletePeople = (peopleID) => async (dispatch) => {
   try {
     const res = await axios.delete(
-      `${API_URL}/delete-project/${peopleID}`,
+      `${API_URL}/delete-people/${peopleID}`,
       config
     );
     res?.data?.status && window.location.reload();
@@ -82,6 +82,20 @@ export const UpdatePeopleRole = (roleData) => async (dispatch) => {
     const res = await axios.put(
       `${API_URL}/update-role/${roleData?._id}`,
       roleData,
+      config
+    );
+    res?.status && window.location.reload();
+    console.log(res);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const UpdatePeople = (peopleData) => async (dispatch) => {
+  try {
+    const res = await axios.put(
+      `${API_URL}/update-people/${peopleData?._id}`,
+      peopleData,
       config
     );
     res?.status && window.location.reload();

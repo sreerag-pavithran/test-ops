@@ -31,6 +31,10 @@ const OverView = () => {
 
   let { projectid } = useParams();
 
+  if (projectid == null) {
+    window.location.replace("/projects");
+  }
+
   const dashboardData = useSelector((state) => state?.dashboard);
   const currentProject = localStorage.getItem("currentProject");
 
@@ -47,7 +51,6 @@ const OverView = () => {
   }, [dashboardData]);
 
   const handleCreateMilestone = () => {
-    console.log("SEND", formData);
     dispatch(CreateMileStone(formData));
   };
 
