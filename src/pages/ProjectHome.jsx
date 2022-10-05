@@ -330,7 +330,7 @@ const ProjectHome = () => {
                 <ModalHeader fontSize={28}>Choose a template</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody pb={6}>
-                  <Button>Customer onboarding for B2B software</Button>
+                  <Button>Blank Project</Button>
                 </ModalBody>
                 <ModalBody pb={6} mt={16}>
                   <Button

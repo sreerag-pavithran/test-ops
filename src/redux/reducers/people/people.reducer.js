@@ -4,11 +4,14 @@ const {
   PEOPLE_API_CALL_OFF,
   PEOPLE_API_LOADER_OFF,
   PEOPLE_API_LOADER_ON,
+  PEOPLE_API_MOADL_ON,
+  PEOPLE_API_MOADL_OFF,
   PEOPLE_API_DATA,
 } = PeopleTypes;
 
 const InitialState = {
   people: [],
+  modalOpen: false,
   peopleLoading: false,
   peopleApiCall: {
     apiCalled: false,
@@ -34,6 +37,18 @@ export const PeopleReducer = (state = InitialState, action) => {
           title: payload?.title,
           status: payload?.status ? "success" : "error",
         },
+      };
+      break;
+    case PEOPLE_API_MOADL_ON:
+      state = {
+        ...state,
+        modalOpen: true,
+      };
+      break;
+    case PEOPLE_API_MOADL_OFF:
+      state = {
+        ...state,
+        modalOpen: false,
       };
       break;
     case PEOPLE_API_LOADER_ON:

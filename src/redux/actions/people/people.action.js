@@ -1,3 +1,4 @@
+import { message } from "antd";
 import axios from "axios";
 import { API_URL } from "../../../utils/url";
 import { PeopleTypes } from "../../actionTypes/";
@@ -7,6 +8,8 @@ const {
   PEOPLE_API_CALL_OFF,
   PEOPLE_API_LOADER_ON,
   PEOPLE_API_LOADER_OFF,
+  PEOPLE_API_MOADL_ON,
+  PEOPLE_API_MOADL_OFF,
   PEOPLE_API_DATA,
 } = PeopleTypes;
 
@@ -37,7 +40,7 @@ export const FetchPeopleApi = () => async (dispatch) => {
   }
 };
 
-export const CreateUserApi = (formData) => async (dispatch) => {
+export const CreateUserApi = (formData, onClose) => async (dispatch) => {
   try {
     console.log(formData, "DATA");
     dispatch({
@@ -48,7 +51,9 @@ export const CreateUserApi = (formData) => async (dispatch) => {
     });
     const res = await axios.post(`${API_URL}/signup`, formData, config);
     res?.status && dispatch({ type: PEOPLE_API_LOADER_OFF });
+    res && message.success(res?.data?.msg);
     res?.status && dispatch(FetchPeopleApi());
+    onClose();
   } catch (error) {
     console.log(error);
   }

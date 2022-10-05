@@ -122,8 +122,10 @@ export const AddCustomerInfo = (formData, projectID) => async (dispatch) => {
       config
     );
     console.log(res);
+    res && res?.data?.status && message.success(res?.data?.msg);
   } catch (error) {
     console.log(error);
+    message.error(error?.response?.data?.msg);
   }
 };
 

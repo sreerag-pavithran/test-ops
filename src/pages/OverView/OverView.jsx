@@ -31,7 +31,7 @@ const OverView = () => {
 
   let { projectid } = useParams();
 
-  if (projectid == null) {
+  if (projectid == "null") {
     window.location.replace("/projects");
   }
 

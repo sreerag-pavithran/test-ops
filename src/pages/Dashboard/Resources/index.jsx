@@ -80,6 +80,7 @@ const Resource = (props) => {
   const handleOnSubmit = async (event) => {
     event.preventDefault();
     try {
+      const currentProject = localStorage.getItem("currentProject");
       const { title } = state;
       if (title.trim() !== "") {
         if (file) {
@@ -88,11 +89,15 @@ const Resource = (props) => {
           formData.append("title", title);
 
           setErrorMsg("");
-          await axios.post(`${API_URL}/add-resource`, formData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          });
+          await axios.post(
+            `${API_URL}/add-resource/${currentProject}`,
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
           onClose();
           props.history.push("/resources");
         } else {

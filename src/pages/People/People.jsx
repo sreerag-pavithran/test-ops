@@ -87,7 +87,7 @@ const People = () => {
     if (!formData.email || !formData.fullName || !formData.role) {
       return setErr(true);
     }
-    dispatch(CreateUserApi(formData));
+    dispatch(CreateUserApi(formData, onClose));
   };
 
   const addRoleApi = async () => {

@@ -51,12 +51,18 @@ const Frontpage = () => {
     role: "",
     error: "",
   });
+
   const [project, setProject] = useState({
     title: "",
     kickOff: "",
     magic_link: "",
     error: "",
   });
+
+  useEffect(() => {
+    onOpen();
+  }, []);
+
   const onChangeHandler = (e) => {
     setSignUp((prevState) => ({
       ...prevState,
@@ -112,9 +118,9 @@ const Frontpage = () => {
   return (
     <div>
       <Tabs align="end">
-        <Button colorScheme="teal" variant="solid" mt={4} mr={4}>
+        {/* <Button colorScheme="teal" variant="solid" mt={4} mr={4}>
           <Link to="/login">Log in</Link>
-        </Button>
+        </Button> */}
         <Button
           onClick={onOpen}
           colorScheme="teal"
@@ -130,7 +136,7 @@ const Frontpage = () => {
         initialFocusRef={initialRef}
         finalFocusRef={finalRef}
         isOpen={isOpen}
-        onClose={onClose}
+        onClose={() => window.location.replace("https://onboardops.com/")}
       >
         <ModalOverlay />
         {!isNext ? (
@@ -179,7 +185,7 @@ const Frontpage = () => {
             <ModalHeader fontSize={28}>Choose a template</ModalHeader>
             <ModalCloseButton />
             <ModalBody pb={6}>
-              <Button>Customer onboarding for B2B software</Button>
+              <Button>Blank Project</Button>
             </ModalBody>
             <ModalBody pb={6} mt={16}>
               <Button

@@ -9,9 +9,15 @@ import { AddCustomerInfo } from "../../redux/actions/dashboard/dashboard.action"
 
 const CustomerInfo = () => {
   const [value, setValue] = useState("");
+  const [projectName, setProjectName] = useState("");
   const dispatch = useDispatch();
 
   const currentProject = localStorage.getItem("currentProject");
+
+  useEffect(() => {
+    const currentProjectName = localStorage.getItem("currentProjectName");
+    setProjectName(currentProjectName);
+  }, []);
 
   const handleUpdateInfo = () => {
     dispatch(AddCustomerInfo(value, currentProject));
@@ -28,7 +34,7 @@ const CustomerInfo = () => {
             }}
           >
             <p style={{ color: "#333", fontSize: 30, fontWeight: "bold" }}>
-              OnBoard Ops
+              {projectName}
             </p>
             <Button onClick={() => handleUpdateInfo()} className="button_main">
               Save info

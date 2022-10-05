@@ -18,6 +18,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { useState } from "react";
+import axios from "axios";
+import { API_URL } from "../../utils/url";
 
 const currentProject = localStorage.getItem("currentProject");
 const currentProjectName = localStorage.getItem("currentProjectName");
@@ -75,17 +77,47 @@ const SidebarContent = ({ onClose, ...rest }) => {
   const dispatch = useDispatch();
   const location = useLocation();
   const projectData = useSelector((state) => state.dashboard);
+  const [toDo, setToDo] = useState([]);
   const [projectName, setProjectName] = useState(
     localStorage.getItem("currentProjectName")
   );
 
-  useEffect(() => {}, []);
+  const findCurrentTasks = async () => {
+    const token = window.localStorage.getItem("token");
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${token}`,
+      },
+    };
+    const currentUser = JSON.parse(localStorage.getItem("user"));
+    const res = await axios.get(
+      `${API_URL}/get-current-people-task/${currentUser?._id}`,
+      config
+    );
+    const {
+      data: {
+        data: { allTasksBySelectedId },
+      },
+    } = res;
+    let filterData =
+      allTasksBySelectedId?.length > 0 &&
+      allTasksBySelectedId?.filter(
+        (ele) => ele?.status == "in_progress" || ele?.status == "on_hold"
+      );
+    setToDo(filterData);
+  };
+
+  useEffect(() => {
+    findCurrentTasks();
+  }, []);
 
   const navigate = useNavigate();
   const handleSignOut = () => {
     dispatch(signout());
     navigate("/", { replace: true });
   };
+
   return (
     <Box
       transition="3s ease"
@@ -100,8 +132,8 @@ const SidebarContent = ({ onClose, ...rest }) => {
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
         <Text
           fontSize="2xl"
-          fontFamily="monospace"
-          fontWeight="bold"
+          // fontFamily="monospace"
+          fontWeight="semibold"
           color="white"
         >
           {projectName}
@@ -149,7 +181,12 @@ const SidebarContent = ({ onClose, ...rest }) => {
             color="white"
           >
             {link.name}
-            <Avatar name="5" bg="red.500" size="xs" ml={24} />
+            <Avatar
+              name={toDo?.length ? toDo?.length?.toString() : "0"}
+              bg="red.500"
+              size="xs"
+              ml={24}
+            />
           </NavItem>
         )
       )}
