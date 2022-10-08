@@ -23,13 +23,17 @@ const config = {
 
 export const FetchPeopleApi = () => async (dispatch) => {
   try {
+    let currentProject = localStorage.getItem("currentProject");
     dispatch({
       type: PEOPLE_API_CALL_OFF,
     });
     dispatch({
       type: PEOPLE_API_LOADER_ON,
     });
-    const res = await axios.get(`${API_URL}/get-all-people`, config);
+    const res = await axios.get(
+      `${API_URL}/get-all-people/${currentProject}`,
+      config
+    );
     res?.status && dispatch({ type: PEOPLE_API_LOADER_OFF });
     const {
       data: { allMember },
@@ -40,24 +44,29 @@ export const FetchPeopleApi = () => async (dispatch) => {
   }
 };
 
-export const CreateUserApi = (formData, onClose) => async (dispatch) => {
-  try {
-    console.log(formData, "DATA");
-    dispatch({
-      type: PEOPLE_API_CALL_OFF,
-    });
-    dispatch({
-      type: PEOPLE_API_LOADER_ON,
-    });
-    const res = await axios.post(`${API_URL}/signup`, formData, config);
-    res?.status && dispatch({ type: PEOPLE_API_LOADER_OFF });
-    res && message.success(res?.data?.msg);
-    res?.status && dispatch(FetchPeopleApi());
-    onClose();
-  } catch (error) {
-    console.log(error);
-  }
-};
+export const CreateUserApi =
+  (formData, onClose, projectID) => async (dispatch) => {
+    try {
+      console.log(formData, "DATA");
+      dispatch({
+        type: PEOPLE_API_CALL_OFF,
+      });
+      dispatch({
+        type: PEOPLE_API_LOADER_ON,
+      });
+      const res = await axios.post(
+        `${API_URL}/add-people/${projectID}`,
+        formData,
+        config
+      );
+      res?.status && dispatch({ type: PEOPLE_API_LOADER_OFF });
+      res && message.success(res?.data?.msg);
+      res?.status && dispatch(FetchPeopleApi());
+      onClose();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
 export const DeletePeople = (peopleID) => async (dispatch) => {
   try {

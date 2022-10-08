@@ -73,6 +73,43 @@ export const CreateTaskApi = (formData, comment) => async (dispatch) => {
   }
 };
 
+export const UpdateTaskApi =
+  (formData, comment, taskID) => async (dispatch) => {
+    try {
+      console.log("API CALLING");
+      const currentProject = localStorage.getItem("currentProject");
+      if (comment?.commentBody) {
+        const res = await axios.post(`${API_URL}/add-comment`, comment, config);
+        if (res?.data?.status === false) {
+          return notify.error(res?.data?.message);
+        }
+        const response = await axios.put(
+          `${API_URL}/update-task/${taskID}`,
+          formData,
+          config
+        );
+        response && notify.success(response?.data?.message);
+        response?.data?.status &&
+          dispatch(FetchCurrentMilestone(currentProject));
+        // response?.data?.status && dispatch({ type: DASHBOARD_TASK_MODAL_OFF });
+      } else {
+        const res = await axios.put(
+          `${API_URL}/update-task/${taskID}`,
+          formData,
+          config
+        );
+        res && notify.success(res?.data?.message);
+        res?.data?.status && dispatch(FetchCurrentMilestone(currentProject));
+        // res?.data?.status && dispatch({ type: DASHBOARD_TASK_MODAL_OFF });
+      }
+    } catch (error) {
+      const {
+        response: { data },
+      } = error;
+      notify.error(data?.message);
+    }
+  };
+
 export const CreateMileStone = (formData) => async (dispatch) => {
   try {
     const res = await axios.post(

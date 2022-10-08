@@ -96,7 +96,7 @@ export const DashboardReducer = (state = InitialState, action) => {
       };
       break;
     case DASHBOARD_CURRENT_PROJECT_NAME:
-      console.log(payload, "pay comning");
+      // console.log(payload, "pay comning");
       state = {
         ...state,
         currentProjectName: payload,
@@ -109,7 +109,7 @@ export const DashboardReducer = (state = InitialState, action) => {
       };
       break;
     case DASHBOARD_TASK_FETCH:
-      console.log(payload);
+      // console.log(payload);
       state = {
         ...state,
         singleTaskDetail: payload,

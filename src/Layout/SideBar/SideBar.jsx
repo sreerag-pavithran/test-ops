@@ -181,12 +181,14 @@ const SidebarContent = ({ onClose, ...rest }) => {
             color="white"
           >
             {link.name}
-            <Avatar
-              name={toDo?.length ? toDo?.length?.toString() : "0"}
-              bg="red.500"
-              size="xs"
-              ml={24}
-            />
+            {toDo?.length && (
+              <Avatar
+                name={toDo?.length ? toDo?.length?.toString() : "0"}
+                bg="red.500"
+                size="xs"
+                ml={24}
+              />
+            )}
           </NavItem>
         )
       )}
