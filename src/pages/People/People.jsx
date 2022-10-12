@@ -55,6 +55,7 @@ const People = () => {
   const [addPeople, setAddPeople] = useState(false);
   const [editRoleModal, setEditRoleModal] = useState(false);
   const [peopleData, setPeopleData] = useState({});
+  const [signStatus, setSignStatus] = useState(null);
   const [editPeopleData, setEditPeopleData] = useState({});
   const [addRoleData, setAddRoleData] = useState({});
   const [roleData, setRoleData] = useState({});
@@ -358,7 +359,7 @@ const People = () => {
         />
         <Select
           style={{ marginBottom: 12 }}
-          placeholder="Select option"
+          placeholder="Role Access"
           value={editRoleData?.access}
           onChange={(e) =>
             setsEditRoleData({ ...editRoleData, access: e.target.value })
@@ -370,12 +371,25 @@ const People = () => {
           <option value="external-editor">External Editor</option>
         </Select>
 
-        <Input
-          disabled
-          value={editRoleData?.fullName}
+        <Select
           style={{ marginBottom: 12 }}
-          placeholder="Role"
-        />
+          placeholder="Assigned to"
+          value={editRoleData?.assignedTo?.value}
+          onChange={(e) =>
+            setsEditRoleData({ ...editRoleData, assignedTo: e.target.value })
+          }
+          // value={roleData?.role?.access}
+        >
+          {peopleState &&
+            peopleState?.people &&
+            peopleState?.people?.map((ele) => {
+              return <option value={ele?._id}>{ele?.fullName}</option>;
+            })}
+
+          <option value="internal-editor">Internal Editor</option>
+          <option value="external-editor">External Editor</option>
+        </Select>
+
         <div
           style={{
             display: "flex",
@@ -572,7 +586,9 @@ const People = () => {
                     >
                       {ele?.role?.value}
                     </Text>
-                    <Text>{ele?.email}</Text>
+                    <Text tets={console.log(ele)}>{ele?.role?.access}</Text>
+                    <Text tets={console.log(ele)}>{ele?.email}</Text>
+                    <Text>{ele?.is_verified && "Signed up"}</Text>
                     {/* <Text>
                       {dayjs(ele?.createdAt).format("MM:DD:YYYY h:mm A")}
                     </Text> */}

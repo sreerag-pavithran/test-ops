@@ -13,6 +13,7 @@
 		"@testing-library/user-event": "^14.1.1",
 		"antd": "^4.23.2",
 		"axios": "^0.27.2",
+		"bootstrap-icons": "^1.9.1",
 		"chakra-ui-date-input": "^1.0.0",
 		"dayjs": "^1.11.5",
 		"downloadjs": "^1.4.7",

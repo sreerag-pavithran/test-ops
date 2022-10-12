@@ -58,16 +58,18 @@ const TaskCard = ({ tasks }) => {
                   ? "In progress"
                   : ele?.status?.replace("_", " ")}
               </Tag>
-              <Icon as={ViewOffIcon} color="#727272" />
+              {ele?.is_private && <Icon as={ViewOffIcon} color="#727272" />}
             </Flex>
             <p style={{ marginTop: 25, fontSize: 16, fontWeight: 400 }}>
               {ele?.title}
             </p>
 
             <Flex justifyContent="space-between" marginTop="25px">
-              <Tag colorScheme="red" borderRadius="full" fontSize="11px">
-                Assigned to
-              </Tag>
+              {/* <Tag colorScheme="red" borderRadius="full" fontSize="11px"> */}
+              <p>
+                {ele?.assignedTo?.fullName ? ele?.assignedTo?.fullName : ""}
+              </p>
+              {/* </Tag> */}
               <p style={{ fontSize: "11px", color: "#727272" }}>
                 Due {dayjs(ele?.dueDate).format("MM/DD")}
               </p>

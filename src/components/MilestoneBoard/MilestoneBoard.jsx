@@ -15,18 +15,30 @@ import { FetchPeopleApi } from "../../redux/actions/people/people.action";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Mentions } from "antd";
+import { useDisclosure } from "@chakra-ui/react";
 
-import { DashboardTypes } from "../../redux/actionTypes";
+import {
+  DashboardTypes,
+  PeopleTypes,
+  RolesTypes,
+} from "../../redux/actionTypes";
+import AddRoleModal from "../AddRoleModal/AddRoleModal";
+import AddPeopleModal from "../AddPeopleModal/AddPeopleModal";
 const {
   DASHBOARD_TASK_MODAL_ON,
   DASHBOARD_TASK_MODAL_OFF,
   DASHBOARD_SET_CURRENT_MILESTONE,
 } = DashboardTypes;
 
+const { PEOPLE_MOADL_ON } = PeopleTypes;
+const { ROLES_GLOBAL_MODAL_ON } = RolesTypes;
+
 const { Option } = Select;
 
 const MilestoneBoard = (data) => {
   const navigate = useNavigate();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [openPeople, setOpenPeople] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     task_content: "",
@@ -73,8 +85,17 @@ const MilestoneBoard = (data) => {
     dispatch(CreateTaskApi(formData, mention));
   };
 
+  const toChildCallback = (status) => {
+    setOpenPeople(false);
+  };
+
   return (
     <div style={{ width: "250px", marginBottom: "20px" }}>
+      <AddPeopleModal
+        isOpen={openPeople}
+        isClose={false}
+        callBackChild={toChildCallback}
+      />
       {dashboard?.taskModal && (
         <Modal
           className="ant-modal"
@@ -122,6 +143,11 @@ const MilestoneBoard = (data) => {
                   className="assign_select"
                   bordered={false}
                   onChange={(value) => {
+                    if (value === "add_people") {
+                      return setOpenPeople(true);
+                    } else if (value === "add_role") {
+                      return dispatch({ type: ROLES_GLOBAL_MODAL_ON });
+                    }
                     setFormData({ ...formData, assignedTo: value });
                   }}
                 >
@@ -135,6 +161,12 @@ const MilestoneBoard = (data) => {
                       );
                     })}
                   <Option value="unassigned">Unassigned</Option>
+                  <Option value="add_people">
+                    <i class="bi bi-person-plus"></i> Add People
+                  </Option>
+                  <Option value="add_role">
+                    <i class="bi bi-plus-circle"></i> Add Role
+                  </Option>
                 </Select>
               </div>
               <div>

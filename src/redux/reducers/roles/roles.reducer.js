@@ -7,11 +7,14 @@ const {
   ROLES_API_DATA,
   ROLES_MODAL_OFF,
   ROLES_MODAL_ON,
+  ROLES_GLOBAL_MODAL_ON,
+  ROLES_GLOBAL_MODAL_OFF,
 } = RolesTypes;
 
 const InitialState = {
   roles: [],
   rolesModal: false,
+  rolesModalGlobal: false,
   rolesLoading: false,
   rolesApiCall: {
     apiCalled: false,
@@ -39,6 +42,18 @@ export const RolesReducer = (state = InitialState, action) => {
       state = {
         ...state,
         rolesModal: false,
+      };
+      break;
+    case ROLES_GLOBAL_MODAL_ON:
+      state = {
+        ...state,
+        rolesModalGlobal: true,
+      };
+      break;
+    case ROLES_GLOBAL_MODAL_OFF:
+      state = {
+        ...state,
+        rolesModalGlobal: false,
       };
       break;
     case ROLES_API_CALL:
