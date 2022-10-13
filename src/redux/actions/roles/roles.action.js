@@ -57,9 +57,13 @@ export const CreateUserApi = (formData) => async (dispatch) => {
   }
 };
 
-export const AddRole = (formData) => async (dispatch) => {
+export const AddRole = (formData, projectID) => async (dispatch) => {
   try {
-    const res = await axios.post(`${API_URL}/add-role`, formData, config);
+    const res = await axios.post(
+      `${API_URL}/add-role/${projectID}`,
+      formData,
+      config
+    );
     console.log(res);
     return res;
   } catch (error) {

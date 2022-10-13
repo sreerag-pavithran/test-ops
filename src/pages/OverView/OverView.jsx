@@ -14,6 +14,7 @@ import { Button, DatePicker, Input, Modal, Skeleton } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useNavigate, useParams } from "react-router-dom";
 import { DashboardTypes } from "../../redux/actionTypes";
+import { FetchToDoByUserApi } from "../../redux/actions/todo/todo.action";
 
 const { DASHBOARD_MILESTONE_MODAL_ON, DASHBOARD_MILESTONE_MODAL_OFF } =
   DashboardTypes;
@@ -104,7 +105,11 @@ const OverView = () => {
                   return <MilestoneBoard data={ele} />;
                 })}
               <PlusOutlined
-                onClick={() => dispatch({ type: DASHBOARD_MILESTONE_MODAL_ON })}
+                onClick={() => {
+                  let userToken = JSON.parse(localStorage.getItem("user"));
+                  dispatch(FetchToDoByUserApi(userToken?._id));
+                  dispatch({ type: DASHBOARD_MILESTONE_MODAL_ON });
+                }}
                 style={{
                   marginTop: 20,
                   cursor: "pointer",

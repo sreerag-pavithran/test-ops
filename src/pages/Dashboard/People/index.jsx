@@ -52,6 +52,7 @@ const People = (props) => {
   //  ADD ROLE
   const handleRoleSubmit = async (event) => {
     event.preventDefault();
+    const currentProject = window.localStorage.getItem("currentProject");
     try {
       const { value, access } = addRole;
       if (value !== "" || access !== "") {
@@ -60,7 +61,7 @@ const People = (props) => {
           value,
           access,
         };
-        await axios.post(`${API_URL}/add-role`, role);
+        await axios.post(`${API_URL}/add-role/${currentProject}`, role);
         seTGoToRole(!gotorole);
         onClose();
         navigate("/people");

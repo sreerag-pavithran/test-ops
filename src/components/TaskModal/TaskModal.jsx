@@ -44,7 +44,7 @@ const TaskModal = () => {
     status: "",
     dependencies: [],
     dueDate: "",
-    private: false,
+    is_private: false,
   });
   const [mention, setMention] = useState({
     commentBody: "",
@@ -98,9 +98,17 @@ const TaskModal = () => {
     taskDetails?._id && setLoader(false);
   }, [taskDetails]);
 
+  console.log(taskDetails, "DETAILS");
+
   const handleUpdateTask = () => {
-    console.log("CPMNGNNGN");
-    dispatch(UpdateTaskApi(formData, formData?.comment, taskDetails?._id));
+    dispatch(
+      UpdateTaskApi(
+        formData,
+        formData?.comment,
+        taskDetails?._id,
+        taskDetails?._id
+      )
+    );
   };
 
   return (
@@ -129,7 +137,10 @@ const TaskModal = () => {
                     color: "#929292",
                   }}
                   onChange={() =>
-                    setFormData({ ...formData, private: !formData?.private })
+                    setFormData({
+                      ...formData,
+                      is_private: !formData?.is_private,
+                    })
                   }
                 >
                   Private
@@ -254,12 +265,6 @@ const TaskModal = () => {
                     border: "none",
                     outline: "none",
                   }}
-                  onChange={(value) => {
-                    setMention({
-                      ...mention,
-                      commentBody: value,
-                    });
-                  }}
                   onSelect={(option) => {
                     setMention({
                       ...mention,
@@ -267,6 +272,13 @@ const TaskModal = () => {
                     });
                   }}
                   placeholder="Type @ to mention a user"
+                  onChange={(value) => {
+                    setMention({
+                      ...mention,
+                      commentBody: value,
+                    });
+                    setFormData({ ...formData, comment: mention });
+                  }}
                 >
                   {people &&
                     people.length > 0 &&
@@ -281,7 +293,7 @@ const TaskModal = () => {
               </div>
               <hr />
               <div style={{ padding: 10, marginTop: 10 }}>
-                <TextArea
+                {/* <TextArea
                   value={taskDetails?.task_content}
                   disabled
                   // onChange={(e) =>
@@ -293,13 +305,15 @@ const TaskModal = () => {
                     minRows: 3,
                     maxRows: 5,
                   }}
-                />
-                {/* <ReactQuill
+                /> */}
+                <ReactQuill
                   style={{ border: "none" }}
                   theme="snow"
                   value={formData?.task_content}
-                  onChange={setTaskContent}
-                /> */}
+                  onChange={(e) =>
+                    setFormData({ ...formData, task_content: e })
+                  }
+                />
               </div>
               <div style={{ display: "flex", justifyContent: "center" }}>
                 {/* <Button

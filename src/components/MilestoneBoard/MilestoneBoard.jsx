@@ -6,11 +6,22 @@ import "./style.css";
 import dayjs from "dayjs";
 import TaskCard from "../TaskCard/TaskCard";
 import { useState } from "react";
-import { Button, Checkbox, DatePicker, Input, Modal, Select } from "antd";
+import {
+  Button,
+  Checkbox,
+  DatePicker,
+  Input,
+  message,
+  Modal,
+  Select,
+} from "antd";
 import TextArea from "antd/lib/input/TextArea";
 import "../../index.css";
 import { useDispatch, useSelector } from "react-redux";
-import { CreateTaskApi } from "../../redux/actions/dashboard/dashboard.action";
+import {
+  CreateTaskApi,
+  FetchCurrentMilestone,
+} from "../../redux/actions/dashboard/dashboard.action";
 import { FetchPeopleApi } from "../../redux/actions/people/people.action";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -24,6 +35,9 @@ import {
 } from "../../redux/actionTypes";
 import AddRoleModal from "../AddRoleModal/AddRoleModal";
 import AddPeopleModal from "../AddPeopleModal/AddPeopleModal";
+import ReactQuill from "react-quill";
+import axios from "axios";
+import { API_URL } from "../../utils/url";
 const {
   DASHBOARD_TASK_MODAL_ON,
   DASHBOARD_TASK_MODAL_OFF,
@@ -39,6 +53,8 @@ const MilestoneBoard = (data) => {
   const navigate = useNavigate();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [openPeople, setOpenPeople] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [mileStoneTitle, setMileStoneTitle] = useState("");
   const [formData, setFormData] = useState({
     title: "",
     task_content: "",
@@ -49,7 +65,7 @@ const MilestoneBoard = (data) => {
     status: "",
     dependencies: "",
     dueDate: "",
-    private: false,
+    is_private: false,
   });
   const [mention, setMention] = useState({
     commentBody: "",
@@ -89,6 +105,34 @@ const MilestoneBoard = (data) => {
     setOpenPeople(false);
   };
 
+  const handleUpdateMileStone = async () => {
+    if (mileStoneTitle.length <= 0) {
+      setEditMode(true);
+      return;
+    }
+    const token = window.localStorage.getItem("token");
+    const currentProject = window.localStorage.getItem("currentProject");
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${token}`,
+      },
+    };
+    await axios
+      .put(
+        `${API_URL}/update-milestone/${milestone?._id}`,
+        { title: mileStoneTitle },
+        config
+      )
+      .then((res) => {
+        message.success(res?.data?.msg);
+        dispatch(FetchCurrentMilestone(currentProject));
+      })
+      .catch((err) => {
+        message.error(err?.response?.data?.msg);
+      });
+  };
+
   return (
     <div style={{ width: "250px", marginBottom: "20px" }}>
       <AddPeopleModal
@@ -105,7 +149,10 @@ const MilestoneBoard = (data) => {
               <Checkbox
                 style={{ marginRight: "25px", fontSize: 16, color: "#929292" }}
                 onChange={() =>
-                  setFormData({ ...formData, private: !formData?.private })
+                  setFormData({
+                    ...formData,
+                    is_private: !formData?.is_private,
+                  })
                 }
               >
                 Private
@@ -269,7 +316,13 @@ const MilestoneBoard = (data) => {
           </div> */}
           <hr />
           <div style={{ padding: 10, marginTop: 10 }}>
-            <TextArea
+            <ReactQuill
+              style={{ border: "none" }}
+              theme="snow"
+              // value={formData?.task_content}
+              onChange={(e) => setFormData({ ...formData, task_content: e })}
+            />
+            {/* <TextArea
               // value={value}
               onChange={(e) =>
                 setFormData({ ...formData, task_content: e.target.value })
@@ -280,7 +333,7 @@ const MilestoneBoard = (data) => {
                 minRows: 3,
                 maxRows: 5,
               }}
-            />
+            /> */}
           </div>
           {/* <div style={{ display: "flex", justifyContent: "center" }}>
             <Button className="button_main" onClick={() => handleCreateTask()}>
@@ -289,7 +342,28 @@ const MilestoneBoard = (data) => {
           </div> */}
         </Modal>
       )}
-      <h1 className="milestone_title">{milestone?.title}</h1>
+      {editMode ? (
+        <Input
+          bordered={false}
+          onChange={(e) => setMileStoneTitle(e.target.value)}
+          style={{
+            fontSize: 24,
+            border: "1px solid #ddd",
+            borderTop: 0,
+            borderRight: 0,
+            borderLeft: 0,
+            outline: "none",
+          }}
+          onBlur={() => {
+            handleUpdateMileStone();
+            setEditMode(false);
+          }}
+        />
+      ) : (
+        <h1 className="milestone_title" onClick={() => setEditMode(true)}>
+          {milestone?.title}
+        </h1>
+      )}
       <p className="milestone_due">
         Due {dayjs(milestone?.dueDate).format("MM/DD")}
       </p>

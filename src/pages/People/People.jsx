@@ -18,7 +18,7 @@ import {
 } from "@chakra-ui/react";
 import dayjs from "dayjs";
 import React from "react";
-import { Modal as AntdModal, Select as AntSelect } from "antd";
+import { message, Modal as AntdModal, Select as AntSelect } from "antd";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
@@ -103,24 +103,27 @@ const People = () => {
 
   const addRoleApi = async () => {
     const token = window.localStorage.getItem("token");
+    const currentProject = window.localStorage.getItem("currentProject");
     const config = {
       headers: {
         "Content-Type": "application/json",
         authorization: `Bearer ${token}`,
       },
     };
-    const res = await axios.post(
-      `${API_URL}/add-role`,
-      { ...addRoleData },
-      config
-    );
-    if (res?.statusText === "Created") {
-      dispatch(FetchRolesApi());
-      setAddRoleModal(false);
-      if (addPeople) {
-        onOpen();
-      }
-    }
+    const res = await axios
+      .post(`${API_URL}/add-role/${currentProject}`, { ...addRoleData }, config)
+      .then((response) => {
+        if (response?.statusText === "Created") {
+          dispatch(FetchRolesApi());
+          setAddRoleModal(false);
+          if (addPeople) {
+            onOpen();
+          }
+        }
+      })
+      .catch((err) => {
+        message.error(err?.response?.data?.msg);
+      });
   };
 
   const handleSave = () => {
@@ -446,6 +449,10 @@ const People = () => {
           }
           // value={roleData?.role?.access}
         >
+          <option value="company-admin">Company Admin</option>
+          <option value="project-admin">Project Admin</option>
+          <option value="customer">Customer</option>
+          <option value="external-viewer">External Viewer</option>
           <option value="team-member">Team Member</option>
           {/* <option value="internal-editor">Internal Editor</option>
           <option value="external-editor">External Editor</option> */}
@@ -514,11 +521,8 @@ const People = () => {
                       roles.map((ele) => {
                         return <option value={ele?._id}>{ele?.value}</option>;
                       })}
-                    <option
-                      value="add-role"
-                      onClick={() => console.log("CLICKED")}
-                    >
-                      Add Role <InfoCircleFilled style={{ color: "#333" }} />{" "}
+                    <option value="add-role">
+                      Add Role <i class="bi bi-plus-circle"></i>{" "}
                     </option>
                   </Select>
                 </FormControl>
@@ -586,8 +590,8 @@ const People = () => {
                     >
                       {ele?.role?.value}
                     </Text>
-                    <Text tets={console.log(ele)}>{ele?.role?.access}</Text>
-                    <Text tets={console.log(ele)}>{ele?.email}</Text>
+                    <Text>{ele?.role?.access}</Text>
+                    <Text>{ele?.email}</Text>
                     <Text>{ele?.is_verified && "Signed up"}</Text>
                     {/* <Text>
                       {dayjs(ele?.createdAt).format("MM:DD:YYYY h:mm A")}

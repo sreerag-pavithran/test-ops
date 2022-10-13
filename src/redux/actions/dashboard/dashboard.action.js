@@ -44,50 +44,65 @@ export const FetchCurrentMilestone = (projectID) => async (dispatch) => {
 };
 
 export const CreateTaskApi = (formData, comment) => async (dispatch) => {
-  try {
-    const currentProject = localStorage.getItem("currentProject");
-    if (comment?.commentBody) {
-      const res = await axios.post(`${API_URL}/add-comment`, comment, config);
-      if (res?.data?.status === false) {
-        return notify.error(res?.data?.message);
-      }
-      const response = await axios.post(
-        `${API_URL}/create-task`,
-        formData,
-        config
-      );
-      response && notify.success(response?.data?.message);
-      response?.data?.status && dispatch(FetchCurrentMilestone(currentProject));
-      response?.data?.status && dispatch({ type: DASHBOARD_TASK_MODAL_OFF });
-    } else {
-      const res = await axios.post(`${API_URL}/create-task`, formData, config);
-      res && notify.success(res?.data?.message);
-      res?.data?.status && dispatch(FetchCurrentMilestone(currentProject));
-      res?.data?.status && dispatch({ type: DASHBOARD_TASK_MODAL_OFF });
+  const currentProject = localStorage.getItem("currentProject");
+  if (comment?.commentBody) {
+    const res = await axios.post(`${API_URL}/add-comment`, comment, config);
+    if (res?.data?.status === false) {
+      return notify.error(res?.data?.msg);
     }
-  } catch (error) {
-    const {
-      response: { data },
-    } = error;
-    notify.error(data?.message);
+    const response = await axios.post(
+      `${API_URL}/create-task`,
+      formData,
+      config
+    );
+    console.log(response);
+    response && notify.success(response?.data?.msg);
+    response?.data?.status && dispatch(FetchCurrentMilestone(currentProject));
+    response?.data?.status && dispatch({ type: DASHBOARD_TASK_MODAL_OFF });
+  } else {
+    const res = await axios
+      .post(`${API_URL}/create-task`, formData, config)
+      .then((response) => {
+        console.log(response?.data?.msg);
+        response && notify.success(response?.data?.msg);
+        response?.data?.status &&
+          dispatch(FetchCurrentMilestone(currentProject));
+        response?.data?.status && dispatch({ type: DASHBOARD_TASK_MODAL_OFF });
+      })
+      .catch((err) => {
+        notify.error(err?.response?.data?.msg);
+        return;
+      });
   }
 };
 
 export const UpdateTaskApi =
-  (formData, comment, taskID) => async (dispatch) => {
+  (formData, comment, taskID, taskRef) => async (dispatch) => {
     try {
-      console.log("API CALLING");
       const currentProject = localStorage.getItem("currentProject");
       if (comment?.commentBody) {
-        const res = await axios.post(`${API_URL}/add-comment`, comment, config);
+        console.log(comment);
+        comment.taskRef = taskRef;
+        // delete formData?.comment;
+        const res = await axios
+          .post(`${API_URL}/add-comment`, comment, config)
+          .then((response) => {
+            console.log(response);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
         if (res?.data?.status === false) {
           return notify.error(res?.data?.message);
         }
-        const response = await axios.put(
-          `${API_URL}/update-task/${taskID}`,
-          formData,
-          config
-        );
+        const response = await axios
+          .put(`${API_URL}/update-task/${taskID}`, formData, config)
+          .then((response) => {
+            console.log(response);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
         response && notify.success(response?.data?.message);
         response?.data?.status &&
           dispatch(FetchCurrentMilestone(currentProject));
@@ -126,7 +141,6 @@ export const CreateMileStone = (formData) => async (dispatch) => {
 
 export const AddComment = (formData) => async (dispatch) => {
   try {
-    console.log(formData, "DATA");
     const res = await axios.post(`${API_URL}/add-comment`, formData, config);
     console.log(res);
   } catch (error) {
