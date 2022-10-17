@@ -5,6 +5,7 @@ import "react-quill/dist/quill.snow.css";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import SideBar from "../../Layout/SideBar/SideBar";
+import { GetCurrenntProjectDetails } from "../../redux/actions";
 import { AddCustomerInfo } from "../../redux/actions/dashboard/dashboard.action";
 
 const CustomerInfo = () => {
@@ -13,6 +14,10 @@ const CustomerInfo = () => {
   const dispatch = useDispatch();
 
   const currentProject = localStorage.getItem("currentProject");
+
+  useEffect(() => {
+    dispatch(GetCurrenntProjectDetails());
+  }, []);
 
   useEffect(() => {
     const currentProjectName = localStorage.getItem("currentProjectName");

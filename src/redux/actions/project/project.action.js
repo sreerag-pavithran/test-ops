@@ -15,6 +15,7 @@ const {
   PROJECT_API_CALL_OFF,
   PROJECT_API_LOADER_ON,
   PROJECT_API_LOADER_OFF,
+  CURRENT_PROJECT_INFO,
 } = ProjectType;
 
 const token = window.localStorage.getItem("token");
@@ -40,6 +41,54 @@ export const GetAllProjectsByCurrentUser = () => {
       dispatch({
         type: GET_ALL_PROJECT_SUCCESS,
         payload: { projects, length },
+      });
+    } else {
+      if (response.status === 400 || response.status === 404) {
+        dispatch({
+          type: GET_ALL_PROJECT_FAILURE,
+          payload: { error: response.data.error },
+        });
+      }
+    }
+  };
+};
+
+export const GetCurrenntProjectDetails = () => {
+  return async (dispatch) => {
+    const currentProject = localStorage.getItem("currentProject");
+    const response = await AxiosInstance.get(
+      `/get-all-tasks-by-project-id/${currentProject}`
+    );
+    if (response?.status === 201) {
+      console.log(response);
+
+      dispatch({
+        type: CURRENT_PROJECT_INFO,
+        // payload: { projects, length },
+      });
+    } else {
+      if (response.status === 400 || response.status === 404) {
+        dispatch({
+          type: GET_ALL_PROJECT_FAILURE,
+          payload: { error: response.data.error },
+        });
+      }
+    }
+  };
+};
+
+export const FetchAllTasksOfProject = () => {
+  return async (dispatch) => {
+    const currentProject = localStorage.getItem("currentProject");
+    const response = await AxiosInstance.get(
+      `/get-all-tasks-by-project-id/${currentProject}`
+    );
+    if (response?.status === 201) {
+      console.log(response);
+
+      dispatch({
+        type: CURRENT_PROJECT_INFO,
+        // payload: { projects, length },
       });
     } else {
       if (response.status === 400 || response.status === 404) {

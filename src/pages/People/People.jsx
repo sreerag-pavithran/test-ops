@@ -389,8 +389,8 @@ const People = () => {
               return <option value={ele?._id}>{ele?.fullName}</option>;
             })}
 
-          <option value="internal-editor">Internal Editor</option>
-          <option value="external-editor">External Editor</option>
+          {/* <option value="internal-editor">Internal Editor</option>
+          <option value="external-editor">External Editor</option> */}
         </Select>
 
         <div
@@ -442,18 +442,18 @@ const People = () => {
         />
         <Select
           style={{ marginBottom: 12 }}
-          placeholder="Select option"
+          placeholder="Select access"
           value={addRoleData?.access}
           onChange={(e) =>
             setAddRoleData({ ...addRoleData, access: e.target.value })
           }
           // value={roleData?.role?.access}
         >
-          <option value="company-admin">Company Admin</option>
+          {/* <option value="company-admin">Company Admin</option> */}
           <option value="project-admin">Project Admin</option>
-          <option value="customer">Customer</option>
-          <option value="external-viewer">External Viewer</option>
           <option value="team-member">Team Member</option>
+          <option value="customer">Customer/3rd Party</option>
+          {/* <option value="external-viewer">External Viewer</option> */}
           {/* <option value="internal-editor">Internal Editor</option>
           <option value="external-editor">External Editor</option> */}
         </Select>

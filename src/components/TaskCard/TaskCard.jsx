@@ -3,7 +3,11 @@ import { Box, Flex, Icon } from "@chakra-ui/react";
 import { ViewOffIcon } from "@chakra-ui/icons";
 import { Tag } from "antd";
 import dayjs from "dayjs";
-import { MinusCircleOutlined, ClockCircleOutlined } from "@ant-design/icons";
+import {
+  MinusCircleOutlined,
+  ClockCircleOutlined,
+  CheckCircleOutlined,
+} from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 
 import { DashboardTypes } from "../../redux/actionTypes";
@@ -40,6 +44,8 @@ const TaskCard = ({ tasks }) => {
                     <MinusCircleOutlined />
                   ) : ele?.status == "in_progress" ? (
                     <ClockCircleOutlined />
+                  ) : ele?.status == "completed" ? (
+                    <CheckCircleOutlined />
                   ) : (
                     <MinusCircleOutlined />
                   )
@@ -49,7 +55,9 @@ const TaskCard = ({ tasks }) => {
                     ? "default"
                     : ele?.status == "in_progress"
                     ? "warning"
-                    : "default"
+                    : ele?.status == "completed"
+                    ? "success"
+                    : "error"
                 }
               >
                 {ele?.status == "not_started"

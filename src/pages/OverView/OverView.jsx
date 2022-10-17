@@ -76,13 +76,13 @@ const OverView = () => {
                   setFormData({ ...formData, title: e.target.value })
                 }
               />
-              <p style={{ marginRight: 10, color: "#929292" }}>Due date</p>
+              {/* <p style={{ marginRight: 10, color: "#929292" }}>Due date</p>
               <DatePicker
                 style={{ width: 260, marginBottom: 20 }}
                 onChange={(value) =>
                   setFormData({ ...formData, dueDate: value?._d })
                 }
-              />
+              /> */}
             </div>
 
             <div style={{ display: "flex", justifyContent: "center" }}>

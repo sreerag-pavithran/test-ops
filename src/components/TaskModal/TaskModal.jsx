@@ -93,7 +93,7 @@ const TaskModal = () => {
       status: taskDetails?.status,
       dependencies: taskDetails?.dependencies,
       dueDate: taskDetails?.dueDate,
-      private: taskDetails?.is_private,
+      is_private: taskDetails?.is_private,
     });
     taskDetails?._id && setLoader(false);
   }, [taskDetails]);
@@ -136,6 +136,7 @@ const TaskModal = () => {
                     fontSize: 16,
                     color: "#929292",
                   }}
+                  checked={formData?.is_private}
                   onChange={() =>
                     setFormData({
                       ...formData,
@@ -183,7 +184,8 @@ const TaskModal = () => {
                       Assign to
                     </p>
                     <Select
-                      value={formData?.assignedTo?.fullName}
+                      defaultValue={taskDetails?.assignedTo?.fullName}
+                      // value={formData?.assignedTo?._id}
                       style={{
                         width: 200,
                       }}
@@ -236,8 +238,8 @@ const TaskModal = () => {
                     >
                       <Option value="not_started">Not started</Option>
                       <Option value="in_progress">In progress</Option>
-                      <Option value="complete">Complete</Option>
-                      <Option value="on_hold">On hold</Option>
+                      <Option value="completed">Complete</Option>
+                      <Option value="on-hold">On hold</Option>
                     </Select>
                   </div>
                   <div>
@@ -265,6 +267,7 @@ const TaskModal = () => {
                     border: "none",
                     outline: "none",
                   }}
+                  defaultValue={formData?.comment?.commentBody}
                   onSelect={(option) => {
                     setMention({
                       ...mention,

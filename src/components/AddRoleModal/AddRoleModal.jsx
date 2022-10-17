@@ -79,11 +79,11 @@ const AddRoleModal = (props, { openModal }) => {
           }
           // value={roleData?.role?.access}
         >
-          <option value="company-admin">Company Admin</option>
           <option value="project-admin">Project Admin</option>
-          <option value="customer">Customer</option>
-          <option value="external-viewer">External Viewer</option>
           <option value="team-member">Team Member</option>
+          <option value="customer">Customer/3rd Party</option>
+          {/* <option value="company-admin">Company Admin</option> */}
+          {/* <option value="external-viewer">External Viewer</option> */}
           {/* <option value="internal-editor">Internal Editor</option>
           <option value="external-editor">External Editor</option> */}
         </Select>

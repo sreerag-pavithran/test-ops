@@ -32,6 +32,8 @@ const Frontpage = () => {
   const [isNavigate, SetIsNavigate] = useState(false);
   const [isNext, setIsNext] = useState(false);
   const [isLogOpen, setIsLogOpen] = useState(false);
+  const [err, setErr] = useState(false);
+  const [selected, setSelected] = useState(false);
   const [buttonLoading, setButtonLoading] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const dispatch = useDispatch();
@@ -185,13 +187,26 @@ const Frontpage = () => {
             <ModalHeader fontSize={28}>Choose a template</ModalHeader>
             <ModalCloseButton />
             <ModalBody pb={6}>
-              <Button>Blank Project</Button>
+              <Button
+                backgroundColor={selected ? "#bbb" : "#eee"}
+                onClick={() => setSelected(true)}
+              >
+                Blank Project
+              </Button>
+              {err && (
+                <p style={{ color: "tomato" }}>Please select one option!</p>
+              )}
             </ModalBody>
             <ModalBody pb={6} mt={16}>
               <Button
                 colorScheme="teal"
                 variant="outline"
-                onClick={() => setIsLogOpen(!isLogOpen)}
+                onClick={() => {
+                  if (!selected) {
+                    return setErr(true);
+                  }
+                  setIsLogOpen(!isLogOpen);
+                }}
               >
                 Create project using template
               </Button>

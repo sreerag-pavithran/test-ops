@@ -20,6 +20,7 @@ const InitialState = {
     owner: {},
     magic_link: "",
   },
+  currentProjectInfo: {},
   allProjects: [],
   totalProjects: 0,
   gettingAllProjects: false,

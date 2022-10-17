@@ -47,6 +47,7 @@ export const CreateTaskApi = (formData, comment) => async (dispatch) => {
   const currentProject = localStorage.getItem("currentProject");
   if (comment?.commentBody) {
     const res = await axios.post(`${API_URL}/add-comment`, comment, config);
+    // console.log(res, "COMM");
     if (res?.data?.status === false) {
       return notify.error(res?.data?.msg);
     }
@@ -81,13 +82,15 @@ export const UpdateTaskApi =
     try {
       const currentProject = localStorage.getItem("currentProject");
       if (comment?.commentBody) {
-        console.log(comment);
+        let commentid;
         comment.taskRef = taskRef;
-        // delete formData?.comment;
         const res = await axios
           .post(`${API_URL}/add-comment`, comment, config)
           .then((response) => {
-            console.log(response);
+            console.log(response, "COMMENT");
+            commentid = response?.data?._comment?._id;
+            delete formData?.comment;
+            formData.comment = commentid;
           })
           .catch((err) => {
             console.log(err);
